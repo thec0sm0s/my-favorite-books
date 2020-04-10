@@ -27,7 +27,7 @@ def make_migrations():
     cur.close()
 
 
-def close_db_cursor():
+def close_db_cursor(_=None):
     db_conn = g.pop("db_conn", None)
     if db_conn:
         db_conn.commit()
