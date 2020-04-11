@@ -17,8 +17,8 @@ def get_cursor():
 
 
 def make_migrations():
-    sql = f"CREATE TABLE IF NOT EXISTS {configs.DB_TABLE}" \
-          f"(ID serial PRIMARY KEY, Title varchar, amazon_url varchar, author varchar, genre varchar);"
+    sql = "CREATE TABLE IF NOT EXISTS favorite_books " \
+          "(ID SERIAL PRIMARY KEY, Title varchar, amazon_url varchar, author varchar, genre varchar);"
 
     conn = get_db()
     cur = conn.cursor()
@@ -28,7 +28,14 @@ def make_migrations():
 
 
 def close_db_cursor(_=None):
-    db_conn = g.pop("db_conn", None)
-    if db_conn:
-        db_conn.commit()
-        db_conn.close()
+    db = g.pop("db", None)
+    if db:
+        db.commit()
+        db.close()
+
+
+def insert_book(**kwargs):
+    sql = "INSERT INTO favorite_books (title, amazon_url, author, genre) values (%s, %s, %s, %s)"
+
+    cur = get_cursor()
+    cur.execute(sql, (kwargs["title"], kwargs["amazon_url"], kwargs["author"], kwargs["genre"]))

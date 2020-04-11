@@ -12,42 +12,38 @@ REQUIRED_KEYS = [
 ]
 
 
-def __insert_new_book(**kwargs):
-    cur = db.get_cursor()
-    cur.execute()
-
-
 @bp.route("/insert/", methods=["POST"])
 @auth.requires_authorization
-async def insert_book():
+def insert_book():
     if not request.is_json:
         return jsonify(message="Invalid JSON body."), 400
     json = request.json
     missing_keys = set(REQUIRED_KEYS) - set(json.keys())
     if missing_keys:
-        return jsonify(message=f"Missing required key of book.", missing_keys=list(missing_keys)), 400
-    # TODO: Insert record. __insert_new_book().
+        return jsonify(message="Missing required keys for book entry.", missing_keys=list(missing_keys)), 400
+    db.insert_book(**json)
+    return jsonify(message="Success"), 200
 
 
-@bp.route("/<title>/", methods=["GET"])
+@bp.route("/get/", methods=["POST"])
 @auth.requires_authorization
-def get_book(title):
-    ...
+def get_book():
+    return "Get Book"
 
 
 @bp.route("/", methods=["GET"])
 @auth.requires_authorization
 def get_all_books():
-    ...
+    return "Get all books"
 
 
 @bp.route("/update/", methods=["PUT"])
 @auth.requires_authorization
 def update_book():
-    ...
+    return "Update book"
 
 
 @bp.route("/delete/", methods=["DELETE"])
 @auth.requires_authorization
 def delete_book():
-    ...
+    return "delete book"
