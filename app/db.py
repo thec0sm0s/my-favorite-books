@@ -10,12 +10,12 @@ def get_db():
     return psycopg2.connect(dbname=configs.DATABASE, user=configs.DB_USER, password=configs.DB_PASSWORD)
 
 
-def get_cursor():
+def get_cursor(factory=extras.RealDictCursor):
     db = g.get("db")
     if db:
-        return db.cursor(cursor_factory=extras.RealDictCursor)
+        return db.cursor(cursor_factory=factory)
     g.db = get_db()
-    return g.db.cursor(cursor_factory=extras.RealDictCursor)
+    return g.db.cursor(cursor_factory=factory)
 
 
 def make_migrations():
