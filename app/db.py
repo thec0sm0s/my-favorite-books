@@ -3,6 +3,8 @@ from flask import g
 import configs
 import psycopg2
 
+from psycopg2 import extras
+
 
 def get_db():
     return psycopg2.connect(dbname=configs.DATABASE, user=configs.DB_USER, password=configs.DB_PASSWORD)
@@ -11,7 +13,7 @@ def get_db():
 def get_cursor():
     db = g.get("db")
     if db:
-        return db.cursor()
+        return db.cursor(cursor_factory=extras.RealDictCursor)
     g.db = get_db()
     return g.db.cursor()
 
@@ -36,6 +38,12 @@ def close_db_cursor(_=None):
 
 def insert_book(**kwargs):
     sql = "INSERT INTO favorite_books (title, amazon_url, author, genre) values (%s, %s, %s, %s)"
-
     cur = get_cursor()
     cur.execute(sql, (kwargs["title"], kwargs["amazon_url"], kwargs["author"], kwargs["genre"]))
+
+
+def get_book(title):
+    sql = "SELECT * FROM favorite_books WHERE title LIKE %s;"
+    cur = get_cursor()
+    cur.execute(sql, title)
+    return cur.fetchone()
