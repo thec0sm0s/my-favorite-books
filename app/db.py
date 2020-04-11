@@ -15,7 +15,7 @@ def get_cursor():
     if db:
         return db.cursor(cursor_factory=extras.RealDictCursor)
     g.db = get_db()
-    return g.db.cursor()
+    return g.db.cursor(cursor_factory=extras.RealDictCursor)
 
 
 def make_migrations():
@@ -45,8 +45,13 @@ def insert_book(**kwargs):
 def get_book(title):
     sql = "SELECT * FROM favorite_books WHERE title LIKE %s;"
     cur = get_cursor()
-    cur.execute(sql, title)
-    return cur.fetchone()
+    cur.execute(sql, (title, ))
+    try:
+        json = dict(cur.fetchone())
+    except TypeError:
+        return dict()
+    json.pop("id")
+    return json
 
 
 def book_exists(title, author):

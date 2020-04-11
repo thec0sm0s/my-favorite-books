@@ -24,8 +24,12 @@ def insert_book():
 
 @bp.route("/get/", methods=["POST"])
 @auth.requires_authorization
+@auth.check_request("title")
 def get_book():
-    return "Get Book"
+    json = db.get_book(request.json["title"])
+    if not json:
+        return jsonify(message=f"Book with title '{request.json['title']}' doesn't exists."), 404
+    return jsonify(json), 200
 
 
 @bp.route("/", methods=["GET"])
