@@ -44,8 +44,19 @@ def get_all_books():
 
 @bp.route("/update/", methods=["PUT"])
 @auth.requires_authorization
+@auth.check_request("title", "update")
 def update_book():
-    return "Update book"
+    book = db.get_book(request.json["title"])
+    if not book:
+        return jsonify(message=f"Book with title '{request.json['title']} doesn't exists."), 404
+    if not isinstance(request.json["update"], dict):
+        return jsonify(message="The 'update' value should be JSON."), 400
+    book.update(request.json["update"])
+
+    sql = "UPDATE favorite_books SET amazon_url = %s, author = %s, genre = %s WHERE title = %s;"
+    cur = db.get_cursor()
+    cur.execute(sql, (book["amazon_url"], book["author"], book["genre"], request.json["title"]))
+    return jsonify(message="Success"), 200
 
 
 @bp.route("/delete/", methods=["DELETE"])
