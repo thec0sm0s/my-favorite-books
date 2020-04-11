@@ -34,7 +34,7 @@ def insert_book():
     return jsonify(message="Success"), 200
 
 
-@bp.route("/get/", methods=["POST"])
+@bp.route("/get/", methods=["GET", "POST"])
 @auth.requires_authorization
 @auth.check_request("title")
 @when_book_exists
