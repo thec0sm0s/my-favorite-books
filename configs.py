@@ -2,7 +2,7 @@ import os
 
 
 # Application configs.
-DEBUG = True
+# DEBUG = True
 
 SECRET_KEY = os.getenv("FLASK_SECRET_KEY")      # b'\x83\xe9\x8aZKfv-{/\xad\x0c0IO\x80'
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")    # b' \xe62;l\x8a\x8cB\x12\x98\x90\x89t\xd5\xe2;'
