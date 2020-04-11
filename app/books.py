@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 
-from . import auth
+import functools
 from . import db
+from . import auth
 
 
 bp = Blueprint("books", __name__, url_prefix="/books")
@@ -10,6 +11,17 @@ bp = Blueprint("books", __name__, url_prefix="/books")
 REQUIRED_KEYS = [
     "title", "amazon_url", "author", "genre",
 ]
+
+
+def when_book_exists(view):
+
+    @functools.wraps(view)
+    def wrapper(*args, **kwargs):
+        if not db.get_book(request.json["title"]):
+            return jsonify(message=f"Book with title '{request.json['title']}' doesn't exists."), 404
+        return view(*args, **kwargs)
+
+    return wrapper
 
 
 @bp.route("/insert/", methods=["POST"])
@@ -25,10 +37,9 @@ def insert_book():
 @bp.route("/get/", methods=["POST"])
 @auth.requires_authorization
 @auth.check_request("title")
+@when_book_exists
 def get_book():
     json = db.get_book(request.json["title"])
-    if not json:
-        return jsonify(message=f"Book with title '{request.json['title']}' doesn't exists."), 404
     return jsonify(json), 200
 
 
@@ -45,10 +56,9 @@ def get_all_books():
 @bp.route("/update/", methods=["PUT"])
 @auth.requires_authorization
 @auth.check_request("title", "update")
+@when_book_exists
 def update_book():
     book = db.get_book(request.json["title"])
-    if not book:
-        return jsonify(message=f"Book with title '{request.json['title']} doesn't exists."), 404
     if not isinstance(request.json["update"], dict):
         return jsonify(message="The 'update' value should be JSON."), 400
     book.update(request.json["update"])
@@ -61,5 +71,10 @@ def update_book():
 
 @bp.route("/delete/", methods=["DELETE"])
 @auth.requires_authorization
+@auth.check_request("title")
+@when_book_exists
 def delete_book():
-    return "delete book"
+    sql = "DELETE FROM favorite_books WHERE title = %s;"
+    cur = db.get_cursor()
+    cur.execute(sql, (request.json["title"], ))
+    return jsonify(message="Success"), 200
