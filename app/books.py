@@ -14,14 +14,11 @@ REQUIRED_KEYS = [
 
 @bp.route("/insert/", methods=["POST"])
 @auth.requires_authorization
+@auth.check_request(*REQUIRED_KEYS)
 def insert_book():
-    if not request.is_json:
-        return jsonify(message="Invalid JSON body."), 400
-    json = request.json
-    missing_keys = set(REQUIRED_KEYS) - set(json.keys())
-    if missing_keys:
-        return jsonify(message="Missing required keys for book entry.", missing_keys=list(missing_keys)), 400
-    db.insert_book(**json)
+    if db.book_exists(request.json["title"], request.json["author"]):
+        return jsonify(message="Book already exists."), 409
+    db.insert_book(**request.json)
     return jsonify(message="Success"), 200
 
 

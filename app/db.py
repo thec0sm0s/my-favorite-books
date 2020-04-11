@@ -47,3 +47,10 @@ def get_book(title):
     cur = get_cursor()
     cur.execute(sql, title)
     return cur.fetchone()
+
+
+def book_exists(title, author):
+    sql = "SELECT * FROM favorite_books WHERE title = %s AND author = %s;"
+    cur = get_cursor()
+    cur.execute(sql, (title, author))
+    return bool(cur.fetchone())
