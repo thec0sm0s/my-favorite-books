@@ -13,9 +13,15 @@ def get_db():
 def get_cursor(factory=extras.RealDictCursor):
     db = g.get("db")
     if db:
-        return db.cursor(cursor_factory=factory)
+        cur = g.get("cur")
+        if cur:
+            return cur
+        g.cur = db.cursor(cursor_factory=factory)
+        return g.cur
     g.db = get_db()
-    return g.db.cursor(cursor_factory=factory)
+    cur = g.db.cursor(cursor_factory=factory)
+    g.cur = cur
+    return g.cur
 
 
 def make_migrations():
@@ -27,12 +33,16 @@ def make_migrations():
     cur.execute(sql)
     conn.commit()
     cur.close()
+    conn.close()
 
 
 def close_db_cursor(_=None):
     db = g.pop("db", None)
     if db:
         db.commit()
+        cur = g.pop("cur", None)
+        if cur:
+            cur.close()
         db.close()
 
 
