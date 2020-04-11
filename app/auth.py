@@ -10,8 +10,7 @@ bp = Blueprint("auth", __name__,)
 
 @bp.route("/auth/", methods=["GET", "POST"])
 def authorize():
-    expires_at = datetime.datetime.now() + datetime.timedelta(seconds=current_app.config["JWT_TOKEN_EXPIRES_IN"])
-    # TODO: Make sure expiration works.
+    expires_at = datetime.datetime.utcnow() + datetime.timedelta(seconds=current_app.config["JWT_TOKEN_EXPIRES_IN"])
     token = jwt.encode({
         "exp": expires_at,
     }, key=current_app.config["JWT_SECRET_KEY"])
@@ -31,7 +30,7 @@ def requires_authorization(view):
         except jwt.exceptions.InvalidSignatureError:
             return jsonify(message="Invalid JWT Authorization Token"), 401
         except jwt.exceptions.ExpiredSignatureError:
-            return redirect(url_for("authorize"))
+            return redirect(url_for("auth.authorize"))
         except jwt.DecodeError:
             return jsonify(message="Can't decode JWT Authorization Token"), 401
 
