@@ -53,7 +53,7 @@ def insert_book(**kwargs):
 
 
 def get_book(title):
-    sql = "SELECT * FROM favorite_books WHERE title LIKE %s;"
+    sql = "SELECT * FROM favorite_books WHERE title = %s;"
     cur = get_cursor()
     cur.execute(sql, (title, ))
     try:
