@@ -10,4 +10,4 @@ DB_PASSWORD = "7777"
 DATABASE = "books"
 
 # JWT configs.
-JWT_TOKEN_EXPIRES_IN = 60 * 2    # Specify seconds after which the JWT token expires.
+JWT_TOKEN_EXPIRES_IN = 24 * 60 * 60    # Specify seconds after which the JWT token expires.
