@@ -209,5 +209,5 @@ Redirects to `/auth/` if JWT token is expired.
 Returns when `title` is required key in request JSON body and no book is found with the same title.
 
 ```json
-    {"message": "Book with title 'title' doesn't exists."}
+{"message": "Book with title 'title' doesn't exists."}
 ```
