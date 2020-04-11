@@ -35,8 +35,8 @@ def get_book():
 @bp.route("/", methods=["GET", "POST"])
 @auth.requires_authorization
 def get_all_books():
-    cur = db.get_cursor()
     sql = "SELECT title, author, amazon_url, genre FROM favorite_books;"
+    cur = db.get_cursor()
     cur.execute(sql)
     books = [dict(book) for book in cur.fetchall()]
     return jsonify(books), 200
