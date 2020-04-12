@@ -90,21 +90,38 @@ Returns JSON list of all user's favorite books.
     - **STATUS CODE:** 200 OK
     - **JSON BODY:**
 ```json
-
- [
-      {
-        "amazon_url": "",
-        "author": "",
-        "genre": "",
-        "title": ""
-      },
-      {
-        "amazon_url": "",
-        "author": "",
-        "genre": "",
-        "title": ""
-      }   
- ]
+[
+  {
+    "amazon_url": "https://www.amazon.in/Amnesty-Aravind-Adiga-ebook/dp/B084ZMXC15/",
+    "author": "Aravind Adiga",
+    "genre": "Literature",
+    "title": "Amnesty"
+  },
+  {
+    "amazon_url": "https://www.amazon.in/Moustache-S-Hareesh-ebook/dp/B082ZV4DVT/",
+    "author": "S. Hareesh",
+    "genre": "Fiction",
+    "title": "Moustache"
+  },
+  {
+    "amazon_url": "https://www.amazon.com/dp/059035342X/",
+    "author": "J.K. Rowling",
+    "genre": "Fantasy",
+    "title": "Harry Potter and the Sorcerer's Stone"
+  },
+  {
+    "amazon_url": "https://www.amazon.com/Hunger-Games-Trilogy-Book-ebook/dp/B002MQYOFW/",
+    "author": "Suzanne Collins",
+    "genre": "Toys",
+    "title": "The Hunger Games"
+  },
+  {
+    "amazon_url": "https://www.amazon.in/Low-Jeet-Thayil-ebook/dp/B0812C3ZDF/",
+    "author": "Jeet Thayil",
+    "genre": "Fiction",
+    "title": "Low"
+  }
+]
 
 ```
 
@@ -163,14 +180,14 @@ Delete the book from the database.
     
 ## Error codes.
 
-- **301 Redirect**
+### **301 Redirect**
 
-Redirects to `/auth/` if JWT token is expired.
+- Redirects to `/auth/` if JWT token is expired.
 
 
-- **400 Client Error**
+### **400 Client Error**
 
-    - Returns when the HTTP body is not of `application/json` mime type.
+- Returns when the HTTP body is not of `application/json` mime type.
 ```json
 {"message": "Invalid JSON body."}
 ```
@@ -185,7 +202,7 @@ Redirects to `/auth/` if JWT token is expired.
 ```
 
 
-- **401 Unauthorized**
+### **401 Unauthorized**
     
 - Returns when JWT token is not present in the authorization header.
     
@@ -204,9 +221,9 @@ Redirects to `/auth/` if JWT token is expired.
 ```
 
 
-- **404 Not Found**
+### **404 Not Found**
 
-Returns when `title` is required key in request JSON body and no book is found with the same title.
+- Returns when `title` is required key in request JSON body and no book is found with the same title.
 
 ```json
 {"message": "Book with title 'title' doesn't exists."}
